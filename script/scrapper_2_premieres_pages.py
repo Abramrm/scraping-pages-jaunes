@@ -11,7 +11,7 @@ from statistics import mean
 class ScrapingPagesJaunes():
 # Etape 1 : Se rendre sur l'url
 dr = webdriver.Chrome()
-url = ""
+url = WEBPAGE_PAGEJAUNE
 dr.get(url)
 
 dr.implicitly_wait(20)
