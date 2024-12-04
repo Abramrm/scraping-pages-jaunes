@@ -1,1 +1,0 @@
-WEBPAGE_PAGEJAUNE = "https://www.pagesjaunes.fr/annuaire/chercherlespros?quoiqui=fabrication+carrosserie+remorques"
