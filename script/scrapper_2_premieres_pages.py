@@ -7,6 +7,7 @@ import time
 import random
 import datetime
 from statistics import mean
+from secret import WEBPAGE_PAGEJAUNE
 
 class ScrapingPagesJaunes():
 # Etape 1 : Se rendre sur l'url
