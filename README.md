@@ -11,4 +11,5 @@ This repository was thinked as a "Prove of concept" of a class that allows to re
 
 ## What else ?
 
-Check the requirements.txt file to make sure you have all the packages required to use this code
+* Check the "requirements.txt" file to make sure you have all the packages required to use this code
+* The "selenium" package uses the Google Chrome browser to navigate through the pages, so you need to have it installed on you PC
