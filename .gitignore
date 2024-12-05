@@ -1,2 +1,5 @@
 /script/secret.py
 /.idea/*
+/secret.py
+/output
+/output/*
