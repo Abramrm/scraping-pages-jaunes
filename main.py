@@ -9,14 +9,14 @@ import datetime
 from statistics import mean
 import os
 from AdresseParser import AdresseParser
-from secret import WEBPAGE_PAGEJAUNE
+from secret import WEBPAGE_PAGESJAUNES
 
 
 class ScrapingPagesJaunes:
 
     def __init__(self):
         self.dr = webdriver.Chrome()
-        self.url = WEBPAGE_PAGEJAUNE
+        self.url = WEBPAGE_PAGESJAUNES
         self.dr.get(self.url)
         self.companies_list_file = ""
         self.companies_details = ""
@@ -80,7 +80,8 @@ class ScrapingPagesJaunes:
     def boucler_n_premieres_pages(self, n):
         df_contenu_total = self.scraping_page(self.dr)
         pages = self.nb_pages()
-        print("Avancement : 1 / {} pages".format(pages))
+        print("Avancement Etape 1 (Liste des entreprises) : 1 / {} pages // Temps restant estimé : {}".format(pages,
+              str(datetime.timedelta(seconds=n * mean([5, 8])))))
         for i in range(2, n + 1):
             time.sleep(random.uniform(5, 8))  # Délai aléatoire entre 10 et 30 secondes
             if i > n:
@@ -90,14 +91,14 @@ class ScrapingPagesJaunes:
             self.dr.get(url_suivant)
             df_contenu_page = self.scraping_page(self.dr)
             df_contenu_total = pd.concat([df_contenu_total, df_contenu_page], ignore_index=True)
-            print("Avancement : {} / {} pages".format(i, pages))
-        print("Les dimensions finales de la table sont de : {}".format(df_contenu_total.shape))
+            print("Avancement Etape 1 (Liste des entreprises) : {} / {} pages // Temps restant estimé : {}".format(i,
+                  pages, str(datetime.timedelta(seconds = (n-i) * mean([5, 8])))))
         return df_contenu_total
 
     def boucler_toutes_pages(self):
         df_contenu_total = self.scraping_page(self.dr)
         pages = self.nb_pages()
-        print("Avancement : 1 / {} pages // Temps restant estimé : {}".format(pages, str(datetime.timedelta(
+        print("Avancement Etape 1 (Liste des entreprises): 1 / {} pages // Temps restant estimé : {}".format(pages, str(datetime.timedelta(
             seconds=pages * mean([5, 8])))))
         for i in range(2, pages + 1):
             time.sleep(random.uniform(5, 8))  # Délai aléatoire entre 10 et 30 secondes
@@ -108,7 +109,7 @@ class ScrapingPagesJaunes:
             self.dr.get(url_suivant)
             df_contenu_page = self.scraping_page(self.dr)
             df_contenu_total = pd.concat([df_contenu_total, df_contenu_page], ignore_index=True)
-            print("Avancement : {} / {} pages // Temps restant estimé : {}".format(i, pages, str(datetime.timedelta(
+            print("Avancement Etape 1 (Liste des entreprises): {} / {} pages // Temps restant estimé : {}".format(i, pages, str(datetime.timedelta(
                 seconds=(pages - i) * mean([5, 8])))))
         print("Les dimensions finales de la table sont de : {}".format(df_contenu_total.shape))
         return df_contenu_total
@@ -119,9 +120,9 @@ class ScrapingPagesJaunes:
         if not os.path.exists(folder_path):
             # If it doesn't exist, create the folder
             os.makedirs(folder_path)
-            print(f"Folder '{folder_path}' created.")
+            print(f"#### INFO : Folder '{folder_path}' created.")
         else:
-            print(f"Folder '{folder_path}' already exists.")
+            print(f"#### INFO : Folder '{folder_path}' already exists.")
 
     def save_list_n_premieres_companies(self, n):
         df = self.boucler_n_premieres_pages(n)
@@ -230,7 +231,9 @@ class ScrapingPagesJaunes:
             soup = BeautifulSoup(dr.page_source, "html.parser")
             df_page = self.get_detail(i, soup)
             df_contenu_total = pd.concat([df_contenu_total, df_page], ignore_index=True)
-            print("Avancement : {}/{}".format(compteur, len(id_list)))
+            # print("Avancement : {}/{}".format(compteur, len(id_list)))
+            print("Avancement Etape 2 (Detail par entreprise) : {} / {} pages // Temps restant estimé : {}".format(compteur, len(id_list), str(datetime.timedelta(
+                seconds=(len(id_list) - compteur) * mean([5, 8])))))
             time.sleep(random.uniform(5, 8))  # Délai aléatoire entre 10 et 30 secondes
         return df_contenu_total
 
@@ -295,9 +298,3 @@ if __name__ == "__main__":
     scrap.save_details()
     scrap.save_completed_file()
     print("##### FIN SCRAPING #####")
-
-# if __name__ == "__main__":
-#     scrap = ScrapingPagesJaunes()
-#     scrap.companies_details = "detailed_file.csv"
-#     scrap.companies_list_file = "liste_1_premieres_entreprises.csv"
-#     scrap.join_informations()
